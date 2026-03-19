@@ -1,0 +1,15 @@
+{
+  "name": "@alt-javascript/jsdbc-core",
+  "version": "1.0.0-alpha.0",
+  "description": "JSDBC core interfaces — Driver, Connection, Statement, ResultSet, DataSource, DriverManager",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive test/**/*.spec.js"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@alt-javascript/jsdbc-sqlite",
+  "version": "1.0.0-alpha.0",
+  "description": "JSDBC driver for SQLite via better-sqlite3",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive test/**/*.spec.js"
+  },
+  "dependencies": {
+    "@alt-javascript/jsdbc-core": "*",
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  },
+  "license": "MIT"
+}

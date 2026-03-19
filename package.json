@@ -1,0 +1,16 @@
+{
+  "name": "jsdbc",
+  "private": true,
+  "version": "1.0.0-alpha.0",
+  "description": "JDBC-inspired database access facade for JavaScript — pluggable drivers, isomorphic",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "lint": "eslint packages/*/**.js --fix"
+  },
+  "author": "Craig Parravicini",
+  "license": "MIT"
+}
