@@ -8,7 +8,8 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "npm test --workspaces --if-present",
+    "test": "npm test -w packages/core -w packages/sqlite -w packages/sqljs",
+    "test:integration": "npm test --workspaces --if-present",
     "lint": "eslint packages/*/**.js --fix"
   },
   "author": "Craig Parravicini",
