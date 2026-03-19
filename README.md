@@ -20,6 +20,7 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 |---|---|---|
 | [`@alt-javascript/jsdbc-core`](packages/core/) | Interfaces: Driver, Connection, Statement, PreparedStatement, ResultSet, DataSource, DriverManager | Any |
 | [`@alt-javascript/jsdbc-sqlite`](packages/sqlite/) | SQLite driver via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) | Node.js |
+| [`@alt-javascript/jsdbc-pg`](packages/pg/) | PostgreSQL driver via [pg](https://github.com/brianc/node-postgres) | Node.js |
 | [`@alt-javascript/jsdbc-sqljs`](packages/sqljs/) | SQLite driver via [sql.js](https://github.com/sql-js/sql.js) (WebAssembly) | Node.js + Browser |
 
 ## Quick Start

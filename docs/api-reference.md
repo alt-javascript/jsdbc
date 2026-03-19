@@ -174,3 +174,4 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:sqlite:<path>` | `@alt-javascript/jsdbc-sqlite` | File-based SQLite via better-sqlite3 |
 | `jsdbc:sqlite::memory:` | `@alt-javascript/jsdbc-sqlite` | In-memory SQLite via better-sqlite3 |
 | `jsdbc:sqljs:memory` | `@alt-javascript/jsdbc-sqljs` | In-memory SQLite via sql.js (WebAssembly) |
+| `jsdbc:pg://<host>:<port>/<db>` | `@alt-javascript/jsdbc-pg` | PostgreSQL via pg |
