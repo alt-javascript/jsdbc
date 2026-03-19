@@ -1,0 +1,19 @@
+{
+  "name": "@alt-javascript/jsdbc-template",
+  "version": "1.0.0-alpha.0",
+  "description": "Spring JdbcTemplate for JSDBC — queryForObject, queryForList, update, batchUpdate, transactions",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive test/**/*.spec.js"
+  },
+  "dependencies": {
+    "@alt-javascript/jsdbc-core": "*"
+  },
+  "devDependencies": {
+    "@alt-javascript/jsdbc-sqljs": "*",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  },
+  "license": "MIT"
+}
