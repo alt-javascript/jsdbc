@@ -184,3 +184,90 @@ The `try`/`finally` pattern ensures connections are always closed, even on error
 - [API Reference](api-reference.md) — complete documentation for every interface
 - [Driver Guide](driver-guide.md) — write a custom JSDBC driver for your database
 - [For JDBC Developers](jdbc-migration.md) — concept mapping from Java JDBC to JSDBC
+
+## Using a Different Database
+
+JSDBC drivers are interchangeable — swap the import and URL, and the same code works:
+
+### PostgreSQL
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-pg
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-pg';
+
+const ds = new DataSource({
+  url: 'jsdbc:pg://localhost:5432/mydb',
+  username: 'postgres',
+  password: 'secret',
+});
+```
+
+### MySQL / MariaDB
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-mysql
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-mysql';
+
+const ds = new DataSource({
+  url: 'jsdbc:mysql://localhost:3306/mydb',
+  username: 'root',
+  password: 'secret',
+});
+```
+
+### SQL Server
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-mssql
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-mssql';
+
+const ds = new DataSource({
+  url: 'jsdbc:mssql://localhost:1433/mydb',
+  username: 'sa',
+  password: 'MyPassword1!',
+});
+```
+
+### Oracle
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-oracle
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-oracle';
+
+const ds = new DataSource({
+  url: 'jsdbc:oracle://localhost:1521/FREEPDB1',
+  username: 'appuser',
+  password: 'secret',
+});
+```
+
+### Browser (sql.js / WebAssembly)
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-sqljs
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-sqljs';
+
+const ds = new DataSource({ url: 'jsdbc:sqljs:memory' });
+```
+
+All drivers use the same `DataSource`, `Connection`, `Statement`, `PreparedStatement`, and `ResultSet` API. Your application code doesn't change — only the import and URL.

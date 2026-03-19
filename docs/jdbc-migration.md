@@ -19,6 +19,17 @@ A guide for Java developers migrating to JSDBC. This maps JDBC concepts to their
 | `connection.close()` | `await connection.close()` | Async — all operations return Promises |
 | Connection pooling (HikariCP) | Planned via tarn.js | Not yet implemented |
 
+### Driver Mapping
+
+| JDBC Driver | JSDBC Package | URL Scheme |
+|---|---|---|
+| `org.sqlite.JDBC` | `@alt-javascript/jsdbc-sqlite` | `jsdbc:sqlite:` |
+| `org.postgresql.Driver` | `@alt-javascript/jsdbc-pg` | `jsdbc:pg://` |
+| `com.mysql.cj.jdbc.Driver` | `@alt-javascript/jsdbc-mysql` | `jsdbc:mysql://` |
+| `com.microsoft.sqlserver.jdbc.SQLServerDriver` | `@alt-javascript/jsdbc-mssql` | `jsdbc:mssql://` |
+| `oracle.jdbc.OracleDriver` | `@alt-javascript/jsdbc-oracle` | `jsdbc:oracle://` |
+| N/A (browser) | `@alt-javascript/jsdbc-sqljs` | `jsdbc:sqljs:` |
+
 ## Side-by-Side Examples
 
 ### Basic Query

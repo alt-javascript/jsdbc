@@ -170,16 +170,42 @@ Use the shared compliance test suite from `@alt-javascript/jsdbc-core`:
 
 ```javascript
 // test/PostgresDriver.spec.js
-import { driverComplianceTests } from '@alt-javascript/jsdbc-core/test/driverCompliance.js';
+import driverComplianceTests from '@alt-javascript/jsdbc-core/test/driverCompliance.js';
+import { DataSource } from '@alt-javascript/jsdbc-core';
 import '../index.js';
 
-driverComplianceTests({
-  driverName: 'PostgreSQL',
-  url: 'jsdbc:pg://localhost:5432/testdb',
+driverComplianceTests('PostgreSQL (pg)', () => {
+  return new DataSource({
+    url: 'jsdbc:pg://localhost:5432/testdb',
+    username: 'postgres',
+    password: 'secret',
+  });
 });
 ```
 
 The compliance suite tests all 15 standard driver behaviours: connection lifecycle, DDL/DML via Statement, parameterised queries, NULL handling, ResultSet iteration, transactions, and DriverManager integration.
+
+### Dialect Options
+
+Databases differ in SQL syntax. The compliance suite accepts an optional third argument with dialect options:
+
+```javascript
+driverComplianceTests('My Driver', getDataSource, {
+  limitOne: 'FETCH FIRST 1 ROWS ONLY', // default: 'LIMIT 1'
+  realType: 'NUMBER(10,2)',             // default: 'REAL'
+  textType: 'NVARCHAR(255)',            // default: 'TEXT'
+  ifNotExists: false,                   // default: true (CREATE TABLE IF NOT EXISTS)
+  dropSyntax: 'oracle',                // default: 'mssql' — used when ifNotExists is false
+});
+```
+
+| Option | Default | When to change |
+|---|---|---|
+| `limitOne` | `'LIMIT 1'` | Oracle: `'FETCH FIRST 1 ROWS ONLY'`, MSSQL: `'OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY'` |
+| `realType` | `'REAL'` | Oracle: `'NUMBER(10,2)'` |
+| `textType` | `'TEXT'` | MSSQL: `'NVARCHAR(255)'`, Oracle: `'VARCHAR2(255)'` |
+| `ifNotExists` | `true` | Set to `false` for MSSQL and Oracle (no `CREATE TABLE IF NOT EXISTS`) |
+| `dropSyntax` | `'mssql'` | Set to `'oracle'` for Oracle PL/SQL drop syntax |
 
 ## Package Conventions
 
@@ -187,3 +213,30 @@ The compliance suite tests all 15 standard driver behaviours: connection lifecyc
 - URL scheme: `jsdbc:<subprotocol>:` (e.g. `jsdbc:pg:`, `jsdbc:mysql:`)
 - Self-register on import — no manual driver setup required
 - Wrap an existing battle-tested native driver — don't implement the wire protocol yourself
+
+## Placeholder Conversion Reference
+
+JSDBC uses `?` as the universal placeholder. Each driver converts to its native syntax:
+
+| Database | Native Syntax | Conversion |
+|---|---|---|
+| SQLite (better-sqlite3) | `?` | None needed |
+| sql.js | `?` | None needed |
+| MySQL / MariaDB (mysql2) | `?` | None needed |
+| PostgreSQL (pg) | `$1`, `$2`, ... | `sql.replace(/\?/g, () => '$' + (++idx))` |
+| SQL Server (tedious) | `@p0`, `@p1`, ... | `sql.replace(/\?/g, () => '@p' + (idx++))` |
+| Oracle (oracledb) | `:0`, `:1`, ... | `sql.replace(/\?/g, () => ':' + (idx++))` |
+
+Extract the conversion into a reusable `convertPlaceholders` function in your PreparedStatement.
+
+## Transaction Implementations
+
+Some native drivers have their own transaction API rather than accepting `BEGIN`/`COMMIT`/`ROLLBACK` as SQL strings.
+
+| Database | Transaction Approach |
+|---|---|
+| PostgreSQL, MySQL, SQLite | `BEGIN` / `COMMIT` / `ROLLBACK` via `executeUpdate` |
+| SQL Server (tedious) | `beginTransaction()` / `commitTransaction()` / `rollbackTransaction()` callbacks |
+| Oracle (oracledb) | Implicit transaction start; `conn.commit()` / `conn.rollback()` methods |
+
+Check your native driver's documentation — using its native transaction API avoids subtle state tracking bugs.

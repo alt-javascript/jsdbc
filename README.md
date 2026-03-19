@@ -26,6 +26,19 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 | [`@alt-javascript/jsdbc-oracle`](packages/oracle/) | Oracle driver via [oracledb](https://github.com/oracle/node-oracledb) (Thin mode) | Node.js |
 | [`@alt-javascript/jsdbc-sqljs`](packages/sqljs/) | SQLite driver via [sql.js](https://github.com/sql-js/sql.js) (WebAssembly) | Node.js + Browser |
 
+## Supported Databases
+
+| Database | Package | Native Driver | Placeholder | Pure JS |
+|---|---|---|---|---|
+| SQLite | `jsdbc-sqlite` | better-sqlite3 | `?` (native) | ✗ (native addon) |
+| SQLite (browser) | `jsdbc-sqljs` | sql.js (Wasm) | `?` (native) | ✓ |
+| PostgreSQL | `jsdbc-pg` | pg | `?` → `$1, $2` | ✓ |
+| MySQL / MariaDB | `jsdbc-mysql` | mysql2 | `?` (native) | ✓ |
+| SQL Server | `jsdbc-mssql` | tedious | `?` → `@p0, @p1` | ✓ |
+| Oracle | `jsdbc-oracle` | oracledb (Thin) | `?` → `:0, :1` | ✓ |
+
+All drivers wrap battle-tested native libraries — JSDBC adds a uniform async API on top, not a new wire protocol implementation.
+
 ## Quick Start
 
 ```bash
@@ -108,7 +121,9 @@ jsdbc:<subprotocol>:<connection-details>
 git clone https://github.com/alt-javascript/jsdbc.git
 cd jsdbc
 npm install
-npm test  # runs all workspace tests
+
+npm test                # CI-safe: core + sqlite + sqljs (36 tests, no external deps)
+npm run test:integration  # all drivers (81 tests, needs Docker for pg/mysql/mssql/oracle)
 ```
 
 ## License
