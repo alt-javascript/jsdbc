@@ -1,7 +1,28 @@
 {
   "name": "@alt-javascript/jsdbc-mssql",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "JSDBC driver for Microsoft SQL Server via tedious",
+  "keywords": [
+    "jsdbc",
+    "jdbc",
+    "database",
+    "mssql",
+    "sqlserver",
+    "sql-server",
+    "azure-sql",
+    "tedious",
+    "driver"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "homepage": "https://github.com/alt-javascript/jsdbc/tree/main/packages/mssql#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alt-javascript/jsdbc",
+    "directory": "packages/mssql"
+  },
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -15,5 +36,6 @@
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
   },
+  "author": "Craig Parravicini",
   "license": "MIT"
 }

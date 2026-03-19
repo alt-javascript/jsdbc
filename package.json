@@ -1,8 +1,24 @@
 {
   "name": "jsdbc",
   "private": true,
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "JDBC-inspired database access facade for JavaScript — pluggable drivers, isomorphic",
+  "keywords": [
+    "db",
+    "jdbc",
+    "database",
+    "drivers",
+    "facade"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "homepage": "https://github.com/alt-javascript/jsdbc#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alt-javascript/jsdbc"
+  },
   "type": "module",
   "workspaces": [
     "packages/*"

@@ -1,7 +1,26 @@
 {
   "name": "@alt-javascript/jsdbc-mysql",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "JSDBC driver for MySQL/MariaDB via mysql2",
+  "keywords": [
+    "jsdbc",
+    "jdbc",
+    "database",
+    "mysql",
+    "mariadb",
+    "mysql2",
+    "driver"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "homepage": "https://github.com/alt-javascript/jsdbc/tree/main/packages/mysql#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alt-javascript/jsdbc",
+    "directory": "packages/mysql"
+  },
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -15,5 +34,6 @@
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
   },
+  "author": "Craig Parravicini",
   "license": "MIT"
 }

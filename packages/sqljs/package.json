@@ -1,7 +1,28 @@
 {
   "name": "@alt-javascript/jsdbc-sqljs",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "JSDBC driver for SQLite via sql.js (isomorphic — Node + browser)",
+  "keywords": [
+    "jsdbc",
+    "jdbc",
+    "database",
+    "sqlite",
+    "sql.js",
+    "wasm",
+    "browser",
+    "isomorphic",
+    "driver"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "homepage": "https://github.com/alt-javascript/jsdbc/tree/main/packages/sqljs#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alt-javascript/jsdbc",
+    "directory": "packages/sqljs"
+  },
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -15,5 +36,6 @@
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
   },
+  "author": "Craig Parravicini",
   "license": "MIT"
 }

@@ -1,7 +1,26 @@
 {
   "name": "@alt-javascript/jsdbc-oracle",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "JSDBC driver for Oracle Database via oracledb (Thin mode — pure JS)",
+  "keywords": [
+    "jsdbc",
+    "jdbc",
+    "database",
+    "oracle",
+    "oracledb",
+    "thin-mode",
+    "driver"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "homepage": "https://github.com/alt-javascript/jsdbc/tree/main/packages/oracle#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alt-javascript/jsdbc",
+    "directory": "packages/oracle"
+  },
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -15,5 +34,6 @@
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
   },
+  "author": "Craig Parravicini",
   "license": "MIT"
 }
