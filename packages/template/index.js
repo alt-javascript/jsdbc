@@ -1,2 +1,2 @@
-export { default as JdbcTemplate, TransactionTemplate } from './JdbcTemplate.js';
-export { default as NamedParameterJdbcTemplate, parseNamedParams } from './NamedParameterJdbcTemplate.js';
+export { default as JsdbcTemplate, TransactionTemplate } from './JsdbcTemplate.js';
+export { default as NamedParameterJsdbcTemplate, parseNamedParams } from './NamedParameterJsdbcTemplate.js';

@@ -1,10 +1,10 @@
 /**
- * NamedParameterJdbcTemplate — JdbcTemplate with :paramName support.
+ * NamedParameterJsdbcTemplate — JsdbcTemplate with :paramName support.
  *
  * Parses SQL containing :namedParams and converts to ? placeholders
- * before delegating to JdbcTemplate.
+ * before delegating to JsdbcTemplate.
  */
-import JdbcTemplate from './JdbcTemplate.js';
+import JsdbcTemplate from './JsdbcTemplate.js';
 
 /**
  * Parse named parameters from SQL.
@@ -23,12 +23,12 @@ export function parseNamedParams(sql) {
   return { sql: parsed, paramNames };
 }
 
-export default class NamedParameterJdbcTemplate {
+export default class NamedParameterJsdbcTemplate {
   /**
    * @param {DataSource} dataSource
    */
   constructor(dataSource) {
-    this._template = new JdbcTemplate(dataSource);
+    this._template = new JsdbcTemplate(dataSource);
     this._dataSource = dataSource;
   }
 

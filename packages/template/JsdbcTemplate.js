@@ -1,10 +1,10 @@
 /**
- * JdbcTemplate — Spring-inspired template for JSDBC database access.
+ * JsdbcTemplate — Spring-inspired template for JSDBC database access.
  *
- * Simplifies JDBC-style database operations by managing connections,
- * statements, and result set processing. Analogous to Spring's JdbcTemplate.
+ * Simplifies JSDBC database operations by managing connections,
+ * statements, and result set processing. Port of Spring's JdbcTemplate.
  */
-export default class JdbcTemplate {
+export default class JsdbcTemplate {
   /**
    * @param {DataSource} dataSource
    */
@@ -129,7 +129,7 @@ export default class JdbcTemplate {
   /**
    * Execute a callback within a transaction. Commits on success, rolls back on error.
    *
-   * The callback receives a TransactionTemplate with the same API as JdbcTemplate
+   * The callback receives a TransactionTemplate with the same API as JsdbcTemplate
    * but using a single connection.
    *
    * @param {Function} callback — async (tx) => { ... }
@@ -153,7 +153,7 @@ export default class JdbcTemplate {
 }
 
 /**
- * TransactionTemplate — JdbcTemplate-like API bound to a single connection.
+ * TransactionTemplate — JsdbcTemplate-like API bound to a single connection.
  * Used inside executeInTransaction callbacks.
  */
 class TransactionTemplate {

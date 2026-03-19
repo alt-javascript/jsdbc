@@ -1,15 +1,15 @@
 import { assert } from 'chai';
 import { SingleConnectionDataSource } from '@alt-javascript/jsdbc-core';
 import '@alt-javascript/jsdbc-sqljs';
-import { JdbcTemplate, NamedParameterJdbcTemplate, parseNamedParams } from '../index.js';
+import { JsdbcTemplate, NamedParameterJsdbcTemplate, parseNamedParams } from '../index.js';
 
-describe('JdbcTemplate', () => {
+describe('JsdbcTemplate', () => {
   let template;
   let ds;
 
   beforeEach(async () => {
     ds = new SingleConnectionDataSource({ url: 'jsdbc:sqljs:memory' });
-    template = new JdbcTemplate(ds);
+    template = new JsdbcTemplate(ds);
     await template.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)');
   });
 
@@ -179,13 +179,13 @@ describe('JdbcTemplate', () => {
   });
 });
 
-describe('NamedParameterJdbcTemplate', () => {
+describe('NamedParameterJsdbcTemplate', () => {
   let namedTemplate;
   let ds;
 
   beforeEach(async () => {
     ds = new SingleConnectionDataSource({ url: 'jsdbc:sqljs:memory' });
-    namedTemplate = new NamedParameterJdbcTemplate(ds);
+    namedTemplate = new NamedParameterJsdbcTemplate(ds);
     await namedTemplate.execute('CREATE TABLE products (id INTEGER PRIMARY KEY, name TEXT, price REAL)');
   });
 
