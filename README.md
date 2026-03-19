@@ -21,6 +21,9 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 | [`@alt-javascript/jsdbc-core`](packages/core/) | Interfaces: Driver, Connection, Statement, PreparedStatement, ResultSet, DataSource, DriverManager | Any |
 | [`@alt-javascript/jsdbc-sqlite`](packages/sqlite/) | SQLite driver via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) | Node.js |
 | [`@alt-javascript/jsdbc-pg`](packages/pg/) | PostgreSQL driver via [pg](https://github.com/brianc/node-postgres) | Node.js |
+| [`@alt-javascript/jsdbc-mysql`](packages/mysql/) | MySQL/MariaDB driver via [mysql2](https://github.com/sidorares/node-mysql2) | Node.js |
+| [`@alt-javascript/jsdbc-mssql`](packages/mssql/) | SQL Server driver via [tedious](https://github.com/tediousjs/tedious) | Node.js |
+| [`@alt-javascript/jsdbc-oracle`](packages/oracle/) | Oracle driver via [oracledb](https://github.com/oracle/node-oracledb) (Thin mode) | Node.js |
 | [`@alt-javascript/jsdbc-sqljs`](packages/sqljs/) | SQLite driver via [sql.js](https://github.com/sql-js/sql.js) (WebAssembly) | Node.js + Browser |
 
 ## Quick Start
@@ -86,6 +89,10 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:sqlite:./path/to/db.sqlite` | better-sqlite3 | File-based SQLite |
 | `jsdbc:sqlite::memory:` | better-sqlite3 | In-memory SQLite |
 | `jsdbc:sqljs:memory` | sql.js | In-memory SQLite (WebAssembly) |
+| `jsdbc:pg://host:port/database` | pg | PostgreSQL |
+| `jsdbc:mysql://host:port/database` | mysql2 | MySQL / MariaDB |
+| `jsdbc:mssql://host:port/database` | tedious | SQL Server / Azure SQL |
+| `jsdbc:oracle://host:port/service` | oracledb | Oracle Database (Thin mode) |
 
 ## Documentation
 

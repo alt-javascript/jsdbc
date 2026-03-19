@@ -175,3 +175,6 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:sqlite::memory:` | `@alt-javascript/jsdbc-sqlite` | In-memory SQLite via better-sqlite3 |
 | `jsdbc:sqljs:memory` | `@alt-javascript/jsdbc-sqljs` | In-memory SQLite via sql.js (WebAssembly) |
 | `jsdbc:pg://<host>:<port>/<db>` | `@alt-javascript/jsdbc-pg` | PostgreSQL via pg |
+| `jsdbc:mysql://<host>:<port>/<db>` | `@alt-javascript/jsdbc-mysql` | MySQL/MariaDB via mysql2 |
+| `jsdbc:mssql://<host>:<port>/<db>` | `@alt-javascript/jsdbc-mssql` | SQL Server via tedious |
+| `jsdbc:oracle://<host>:<port>/<svc>` | `@alt-javascript/jsdbc-oracle` | Oracle via oracledb (Thin mode) |

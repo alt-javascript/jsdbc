@@ -7,7 +7,35 @@
  */
 import { assert } from 'chai';
 
-export default function driverComplianceTests(driverName, getDataSource) {
+export default function driverComplianceTests(driverName, getDataSource, options = {}) {
+  const {
+    limitOne = 'LIMIT 1',
+    realType = 'REAL',
+    textType = 'TEXT',
+    ifNotExists = true,
+    dropSyntax = 'mssql',
+  } = options;
+
+  // Helper: generate DDL compatible with the target database
+  function createTable(name, cols) {
+    if (ifNotExists) {
+      return `CREATE TABLE IF NOT EXISTS ${name} (${cols})`;
+    }
+    // For databases without IF NOT EXISTS (MSSQL): caller must drop first
+    return `CREATE TABLE ${name} (${cols})`;
+  }
+
+  // Helper: drop table if it exists
+  function dropTable(name) {
+    if (ifNotExists) {
+      return null; // not needed — CREATE TABLE IF NOT EXISTS handles it
+    }
+    if (dropSyntax === 'oracle') {
+      return `BEGIN EXECUTE IMMEDIATE 'DROP TABLE ${name}'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;`;
+    }
+    return `IF OBJECT_ID('${name}', 'U') IS NOT NULL DROP TABLE ${name}`;
+  }
+
   describe(`JSDBC Driver Compliance: ${driverName}`, () => {
     let ds;
 
@@ -30,7 +58,9 @@ export default function driverComplianceTests(driverName, getDataSource) {
       beforeEach(async () => {
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
-        await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS test_users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)');
+        const drop = dropTable('test_users');
+        if (drop) await stmt.executeUpdate(drop);
+        await stmt.executeUpdate(createTable('test_users', `id INTEGER PRIMARY KEY, name ${textType}, age INTEGER`));
         await stmt.executeUpdate('DELETE FROM test_users');
         await stmt.close();
       });
@@ -77,7 +107,9 @@ export default function driverComplianceTests(driverName, getDataSource) {
       beforeEach(async () => {
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
-        await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS test_items (id INTEGER PRIMARY KEY, label TEXT, price REAL)');
+        const drop = dropTable('test_items');
+        if (drop) await stmt.executeUpdate(drop);
+        await stmt.executeUpdate(createTable('test_items', `id INTEGER PRIMARY KEY, label ${textType}, price ${realType}`));
         await stmt.executeUpdate('DELETE FROM test_items');
         await stmt.close();
       });
@@ -142,7 +174,9 @@ export default function driverComplianceTests(driverName, getDataSource) {
       beforeEach(async () => {
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
-        await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS test_rs (id INTEGER, val TEXT)');
+        const drop = dropTable('test_rs');
+        if (drop) await stmt.executeUpdate(drop);
+        await stmt.executeUpdate(createTable('test_rs', `id INTEGER, val ${textType}`));
         await stmt.executeUpdate('DELETE FROM test_rs');
         await stmt.executeUpdate("INSERT INTO test_rs VALUES (1, 'a')");
         await stmt.executeUpdate("INSERT INTO test_rs VALUES (2, 'b')");
@@ -189,7 +223,7 @@ export default function driverComplianceTests(driverName, getDataSource) {
 
       it('getObject by 1-based index', async () => {
         const stmt = await conn.createStatement();
-        const rs = await stmt.executeQuery('SELECT id, val FROM test_rs ORDER BY id LIMIT 1');
+        const rs = await stmt.executeQuery(`SELECT id, val FROM test_rs ORDER BY id ${limitOne}`);
         assert.isTrue(rs.next());
         assert.equal(rs.getObject(1), 1);
         assert.equal(rs.getObject(2), 'a');
@@ -213,7 +247,9 @@ export default function driverComplianceTests(driverName, getDataSource) {
       beforeEach(async () => {
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
-        await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS test_tx (id INTEGER PRIMARY KEY, val TEXT)');
+        const drop = dropTable('test_tx');
+        if (drop) await stmt.executeUpdate(drop);
+        await stmt.executeUpdate(createTable('test_tx', `id INTEGER PRIMARY KEY, val ${textType}`));
         await stmt.executeUpdate('DELETE FROM test_tx');
         await stmt.close();
       });
