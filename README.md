@@ -1,6 +1,6 @@
 # JSDBC — JDBC-Inspired Database Access for JavaScript
 
-A uniform, async database access facade for JavaScript inspired by Java's JDBC and Spring's `JdbcTemplate`. Write database code once against JSDBC interfaces, then plug in any supported driver — SQLite (Node.js or browser), PostgreSQL, MySQL, SQL Server.
+A uniform, async database access facade for JavaScript inspired by Java's JDBC. Write database code once against JSDBC interfaces, then plug in any supported driver — SQLite (Node.js or browser), PostgreSQL, MySQL, SQL Server.
 
 **Part of the [@alt-javascript](https://github.com/alt-javascript) ecosystem.**
 
@@ -21,8 +21,6 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 | [`@alt-javascript/jsdbc-core`](packages/core/) | Interfaces: Driver, Connection, Statement, PreparedStatement, ResultSet, DataSource, DriverManager | Any |
 | [`@alt-javascript/jsdbc-sqlite`](packages/sqlite/) | SQLite driver via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) | Node.js |
 | [`@alt-javascript/jsdbc-sqljs`](packages/sqljs/) | SQLite driver via [sql.js](https://github.com/sql-js/sql.js) (WebAssembly) | Node.js + Browser |
-
-> **Template layer** (`JsdbcTemplate`, `NamedParameterJsdbcTemplate`) is available separately in the `@alt-javascript/boot` monorepo, alongside CDI and configuration — where data access templates naturally integrate with dependency injection and connection lifecycle management.
 
 ## Quick Start
 
@@ -93,7 +91,7 @@ jsdbc:<subprotocol>:<connection-details>
 - [Getting Started](docs/getting-started.md) — tutorial: first database operations
 - [API Reference](docs/api-reference.md) — complete interface documentation
 - [Driver Guide](docs/driver-guide.md) — writing custom JSDBC drivers
-- [For JDBC Developers](docs/jdbc-migration.md) — migrating from Java JDBC / Spring JdbcTemplate
+- [For JDBC Developers](docs/jdbc-migration.md) — migrating from Java JDBC
 - [Architecture Decisions](decisions/) — ADR register
 
 ## Contributing

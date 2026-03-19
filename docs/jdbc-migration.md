@@ -1,6 +1,6 @@
 # For JDBC Developers
 
-A guide for Java developers migrating to JSDBC. This maps JDBC and Spring `JdbcTemplate` concepts to their JSDBC equivalents, explains what's the same, what's different, and why.
+A guide for Java developers migrating to JSDBC. This maps JDBC concepts to their JSDBC equivalents, explains what's the same, what's different, and why.
 
 ## Concept Mapping
 
@@ -17,12 +17,7 @@ A guide for Java developers migrating to JSDBC. This maps JDBC and Spring `JdbcT
 | `Class.forName("com.mysql.Driver")` | `import '@alt-javascript/jsdbc-mysql'` | ES module import triggers self-registration |
 | `setAutoCommit(false)` | `setAutoCommit(false)` | Identical transaction model |
 | `connection.close()` | `await connection.close()` | Async — all operations return Promises |
-| Spring `JdbcTemplate` | `JsdbcTemplate` (boot monorepo) | Same API pattern — `queryForList`, `queryForObject`, `update` |
-| Spring `NamedParameterJdbcTemplate` | `NamedParameterJsdbcTemplate` (boot monorepo) | Same — `:paramName` → `?` conversion |
-| Spring `RowMapper<T>` | `(row, index) => mapped` | Plain function, same role |
-| Spring `@Transactional` | `executeInTransaction(async (tx) => {...})` | Callback-based — no annotation equivalent |
 | Connection pooling (HikariCP) | Planned via tarn.js | Not yet implemented |
-| `@ConfigurationProperties(prefix="spring.datasource")` | Boot auto-configuration (planned) | Not yet implemented |
 
 ## Side-by-Side Examples
 
@@ -98,69 +93,6 @@ try {
 }
 ```
 
-### Spring JdbcTemplate → JsdbcTemplate
-
-**Spring (Java):**
-```java
-List<User> users = jdbcTemplate.query(
-    "SELECT * FROM users WHERE age > ?",
-    new Object[]{18},
-    (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("name"))
-);
-
-User user = jdbcTemplate.queryForObject(
-    "SELECT * FROM users WHERE id = ?",
-    new Object[]{42},
-    (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("name"))
-);
-
-int count = jdbcTemplate.update(
-    "INSERT INTO users (name, age) VALUES (?, ?)",
-    "Alice", 30
-);
-```
-
-**JSDBC (JavaScript):**
-```javascript
-const users = await jsdbcTemplate.queryForList(
-    'SELECT * FROM users WHERE age > ?',
-    [18],
-    (row) => ({ id: row.id, name: row.name })
-);
-
-const user = await jsdbcTemplate.queryForObject(
-    'SELECT * FROM users WHERE id = ?',
-    [42],
-    (row) => ({ id: row.id, name: row.name })
-);
-
-const count = await jsdbcTemplate.update(
-    'INSERT INTO users (name, age) VALUES (?, ?)',
-    ['Alice', 30]
-);
-```
-
-### Spring NamedParameterJdbcTemplate → NamedParameterJsdbcTemplate
-
-**Spring (Java):**
-```java
-Map<String, Object> params = Map.of("name", "Alice", "minAge", 18);
-List<User> users = namedTemplate.query(
-    "SELECT * FROM users WHERE name = :name AND age > :minAge",
-    params,
-    rowMapper
-);
-```
-
-**JSDBC (JavaScript):**
-```javascript
-const users = await namedTemplate.queryForList(
-    'SELECT * FROM users WHERE name = :name AND age > :minAge',
-    { name: 'Alice', minAge: 18 },
-    (row) => ({ id: row.id, name: row.name })
-);
-```
-
 ## What's the Same
 
 **Connection lifecycle.** Get connection → use → close in finally. Identical pattern.
@@ -174,8 +106,6 @@ const users = await namedTemplate.queryForList(
 **DriverManager registry.** Drivers register themselves. `getConnection(url)` finds the right driver. Same dispatch pattern.
 
 **URL scheme.** `jsdbc:sqlite:./db.sqlite` mirrors `jdbc:sqlite:./db.sqlite`.
-
-**Named parameters.** `:paramName` syntax with a `Map` / object. Same parsing, same output.
 
 ## What's Different
 
@@ -201,15 +131,6 @@ JDBC's `ResultSet` only supports cursor iteration. JSDBC adds `getRows()` which 
 
 ```javascript
 const rows = rs.getRows(); // [{id: 1, name: 'Alice'}, {id: 2, name: 'Bob'}]
-```
-
-### RowMapper is Simpler
-
-Spring's `RowMapper<T>` receives a `ResultSet` and row number. JSDBC's row mapper receives a plain object (already extracted from the ResultSet):
-
-```javascript
-// Spring: (ResultSet rs, int rowNum) -> new User(rs.getString("name"))
-// JSDBC:  (row) => ({ name: row.name })
 ```
 
 ### No Checked Exceptions

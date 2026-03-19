@@ -16,7 +16,7 @@ We needed to decide whether to adopt this syntax or choose an alternative (e.g. 
 
 ## Decision
 
-Use `:paramName` syntax, matching Spring's convention. The `NamedParameterJsdbcTemplate` (in the boot monorepo) parses `:paramName` tokens and converts them to positional `?` placeholders before delegating to `JsdbcTemplate`.
+Use `:paramName` syntax, matching Spring's convention. JSDBC drivers and higher-level tooling parse `:paramName` tokens and convert them to positional `?` placeholders.
 
 ```javascript
 await namedTemplate.queryForList(
