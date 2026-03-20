@@ -1,5 +1,6 @@
 # @alt-javascript/jsdbc-mssql
 
+[![Language](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![npm version](https://img.shields.io/npm/v/%40alt-javascript%2Fjsdbc-mssql)](https://www.npmjs.com/package/@alt-javascript/jsdbc-mssql)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml/badge.svg)](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml)
