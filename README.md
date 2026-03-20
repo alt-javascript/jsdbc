@@ -1,18 +1,19 @@
 # JSDBC — JDBC-Inspired Database Access for JavaScript
 
-A uniform, async database access facade for JavaScript inspired by Java's JDBC. Write database code once against JSDBC interfaces, then plug in any supported driver — SQLite (Node.js or browser), PostgreSQL, MySQL, SQL Server.
+A uniform, async database access facade for JavaScript inspired by Java's JDBC. Write database code once against JSDBC interfaces, then plug in any supported driver — SQLite, PostgreSQL, MySQL, MariaDB, SQL Server, Oracle, or browser-side SQLite via WebAssembly.
 
 **Part of the [@alt-javascript](https://github.com/alt-javascript) ecosystem.**
 
 ## Why JSDBC?
 
-JavaScript has no standard database access API. Every library — `pg`, `mysql2`, `better-sqlite3`, `sql.js` — has its own incompatible interface. JSDBC provides:
+JavaScript has no standard database access API. Every library — `pg`, `mysql2`, `better-sqlite3`, `sql.js`, `tedious`, `oracledb` — has its own incompatible interface. JSDBC provides:
 
-- **One API across databases.** Switch from SQLite to PostgreSQL by changing a URL string.
-- **JDBC-style connection model.** Familiar to Java developers: `DriverManager` → `Connection` → `Statement` / `PreparedStatement` → `ResultSet`.
-- **All-async.** Every operation returns a `Promise`. Idiomatic JavaScript, works with `async`/`await`.
-- **Driver auto-registration.** Import a driver package and it registers itself — no manual setup.
-- **Isomorphic SQL.** The `sql.js` driver runs the same SQL in Node.js and the browser via WebAssembly.
+- **One API across databases.** Switch from SQLite to PostgreSQL by changing a URL string
+- **JDBC-style connection model.** Familiar to Java developers: `DriverManager` → `Connection` → `Statement` / `PreparedStatement` → `ResultSet`
+- **All-async.** Every operation returns a `Promise` — idiomatic JavaScript with `async`/`await`
+- **Connection pooling.** Built-in pool with zero dependencies, or plug in tarn.js / generic-pool
+- **Driver auto-registration.** Import a driver package and it registers itself — no manual setup
+- **Isomorphic SQL.** The `sql.js` driver runs the same SQL in Node.js and the browser via WebAssembly
 
 ## Packages
 
@@ -41,6 +42,8 @@ All drivers wrap battle-tested native libraries — JSDBC adds a uniform async A
 
 ## Quick Start
 
+Requires Node.js 18 or later.
+
 ```bash
 npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-sqlite
 ```
@@ -52,22 +55,28 @@ import '@alt-javascript/jsdbc-sqlite'; // self-registers with DriverManager
 const ds = new DataSource({ url: 'jsdbc:sqlite:./myapp.db' });
 const conn = await ds.getConnection();
 
+// DDL via Statement
 const stmt = await conn.createStatement();
 await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)');
+await stmt.close();
 
+// Parameterised INSERT via PreparedStatement
 const ps = await conn.prepareStatement('INSERT INTO users (name) VALUES (?)');
 ps.setParameter(1, 'Alice');
 await ps.executeUpdate();
+await ps.close();
 
-const ps2 = await conn.prepareStatement('SELECT * FROM users WHERE name = ?');
-ps2.setParameter(1, 'Alice');
-const rs = await ps2.executeQuery();
+// Parameterised SELECT
+const query = await conn.prepareStatement('SELECT * FROM users WHERE name = ?');
+query.setParameter(1, 'Alice');
+const rs = await query.executeQuery();
 
 while (rs.next()) {
   console.log(rs.getObject('id'), rs.getObject('name'));
 }
 
 rs.close();
+await query.close();
 await conn.close();
 ```
 
@@ -85,8 +94,9 @@ const ds = new SingleConnectionDataSource({ url: 'jsdbc:sqljs:memory' });
 const conn = await ds.getConnection();
 
 // Same API as Node.js — SQL runs in-browser via WebAssembly
-await conn.createStatement()
-  .then(s => s.executeUpdate('CREATE TABLE notes (id INTEGER PRIMARY KEY, text TEXT)'));
+const stmt = await conn.createStatement();
+await stmt.executeUpdate('CREATE TABLE notes (id INTEGER PRIMARY KEY, text TEXT)');
+await stmt.close();
 ```
 
 Use `SingleConnectionDataSource` for in-memory databases where each `connect()` call would otherwise create a new empty database.

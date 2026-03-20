@@ -72,6 +72,7 @@ ps.clearParameters();
 ps.setParameter(1, 'Bob');
 ps.setParameter(2, 'bob@example.com');
 await ps.executeUpdate();
+await ps.close();
 
 await conn.close();
 ```
@@ -85,14 +86,14 @@ Use `Statement` for DDL (CREATE, DROP, ALTER). Use `PreparedStatement` for param
 
 ## Step 3: Query Data
 
-Add a query after the inserts:
+Add the following after the inserts in `demo.js` (before `await conn.close()`):
 
 ```javascript
+// Cursor iteration (JDBC-style)
 const query = await conn.prepareStatement('SELECT * FROM users WHERE name = ?');
 query.setParameter(1, 'Alice');
 const rs = await query.executeQuery();
 
-// Cursor iteration (JDBC-style)
 while (rs.next()) {
   console.log({
     id: rs.getObject('id'),
@@ -101,12 +102,14 @@ while (rs.next()) {
   });
 }
 rs.close();
+await query.close();
 
 // Or get all rows at once
 const allQuery = await conn.prepareStatement('SELECT * FROM users ORDER BY id');
 const allRs = await allQuery.executeQuery();
 console.log('All users:', allRs.getRows());
 allRs.close();
+await allQuery.close();
 ```
 
 ```bash
@@ -137,6 +140,7 @@ try {
   ps.setParameter(1, 'Dave');
   ps.setParameter(2, 'dave@example.com');
   await ps.executeUpdate();
+  await ps.close();
 
   await conn.commit();
   console.log('Transaction committed');
@@ -170,6 +174,7 @@ async function findUserByEmail(email) {
     const rs = await ps.executeQuery();
     const rows = rs.getRows();
     rs.close();
+    await ps.close();
     return rows[0] || null;
   } finally {
     await conn.close();
@@ -178,6 +183,40 @@ async function findUserByEmail(email) {
 ```
 
 The `try`/`finally` pattern ensures connections are always closed, even on errors.
+
+## Step 6: Connection Pooling
+
+For applications that handle multiple concurrent requests, use `PooledDataSource` instead of `DataSource`. Pooled connections are reused rather than created and destroyed per request.
+
+```javascript
+import { PooledDataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-sqlite';
+
+const ds = new PooledDataSource({
+  url: 'jsdbc:sqlite:./app.db',
+  pool: { min: 0, max: 10 },
+});
+
+async function findUser(id) {
+  const conn = await ds.getConnection(); // acquired from pool
+  try {
+    const ps = await conn.prepareStatement('SELECT * FROM users WHERE id = ?');
+    ps.setParameter(1, id);
+    const rs = await ps.executeQuery();
+    const rows = rs.getRows();
+    rs.close();
+    await ps.close();
+    return rows[0] || null;
+  } finally {
+    await conn.close(); // returned to pool, not closed
+  }
+}
+
+// At application shutdown:
+await ds.destroy(); // closes all pooled connections
+```
+
+`PooledDataSource` ships with a built-in pool that requires no external dependencies. For production workloads, you can plug in [tarn.js](https://github.com/vincit/tarn.js) or [generic-pool](https://github.com/coopernurse/node-pool) via `TarnPoolAdapter` or `GenericPoolAdapter`. See the [API Reference](api-reference.md#connection-pooling) for details.
 
 ## What's Next
 

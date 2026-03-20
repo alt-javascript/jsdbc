@@ -94,6 +94,7 @@ Executes ad-hoc SQL (no parameters). Best for DDL.
 ```javascript
 const stmt = await conn.createStatement();
 await stmt.executeUpdate('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)');
+await stmt.close();
 ```
 
 | Method | Returns | Description |
@@ -112,6 +113,9 @@ Parameterised SQL execution. Extends `Statement`. Use for all DML to prevent SQL
 const ps = await conn.prepareStatement('SELECT * FROM users WHERE id = ?');
 ps.setParameter(1, 42);
 const rs = await ps.executeQuery();
+// ... use rs ...
+rs.close();
+await ps.close();
 ```
 
 | Method | Returns | Description |

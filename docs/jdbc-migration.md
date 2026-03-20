@@ -156,7 +156,7 @@ JDBC uses `Class.forName()` or service loader. JSDBC uses ES module imports — 
 import '@alt-javascript/jsdbc-sqlite'; // that's it — driver is registered
 ```
 
-### No Connection Pooling (Yet)
+### Connection Pooling
 
 JDBC applications use HikariCP, c3p0, or similar. JSDBC provides `PooledDataSource` with a built-in `SimpleConnectionPool` (zero dependencies). For production, plug in `tarn.js` or `generic-pool` via `TarnPoolAdapter` or `GenericPoolAdapter`:
 
