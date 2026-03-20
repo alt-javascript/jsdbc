@@ -66,7 +66,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
       });
 
       afterEach(async () => {
-        if (!conn.isClosed()) await conn.close();
+        if (conn && !conn.isClosed()) await conn.close();
       });
 
       it('INSERT and SELECT via Statement', async () => {
@@ -115,7 +115,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
       });
 
       afterEach(async () => {
-        if (!conn.isClosed()) await conn.close();
+        if (conn && !conn.isClosed()) await conn.close();
       });
 
       it('INSERT with parameters', async () => {
@@ -185,7 +185,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
       });
 
       afterEach(async () => {
-        if (!conn.isClosed()) await conn.close();
+        if (conn && !conn.isClosed()) await conn.close();
       });
 
       it('cursor iteration with next()', async () => {
@@ -255,7 +255,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
       });
 
       afterEach(async () => {
-        if (!conn.isClosed()) await conn.close();
+        if (conn && !conn.isClosed()) await conn.close();
       });
 
       it('commit persists data', async () => {
