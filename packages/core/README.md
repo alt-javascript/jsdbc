@@ -1,5 +1,9 @@
 # @alt-javascript/jsdbc-core
 
+[![npm version](https://img.shields.io/npm/v/%40alt-javascript%2Fjsdbc-core)](https://www.npmjs.com/package/@alt-javascript/jsdbc-core)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml/badge.svg)](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml)
+
 Core interfaces for JSDBC — a JDBC-inspired database access facade for JavaScript. This package provides the abstract base classes that all JSDBC drivers implement.
 
 **Part of the [@alt-javascript/jsdbc](https://github.com/alt-javascript/jsdbc) monorepo.**

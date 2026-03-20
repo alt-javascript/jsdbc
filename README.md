@@ -1,5 +1,8 @@
 # JSDBC — JDBC-Inspired Database Access for JavaScript
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml/badge.svg)](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml)
+
 A uniform, async database access facade for JavaScript inspired by Java's JDBC. Write database code once against JSDBC interfaces, then plug in any supported driver — SQLite, PostgreSQL, MySQL, MariaDB, SQL Server, Oracle, or browser-side SQLite via WebAssembly.
 
 **Part of the [@alt-javascript](https://github.com/alt-javascript) ecosystem.**

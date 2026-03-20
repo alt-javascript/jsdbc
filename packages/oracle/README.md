@@ -1,5 +1,9 @@
 # @alt-javascript/jsdbc-oracle
 
+[![npm version](https://img.shields.io/npm/v/%40alt-javascript%2Fjsdbc-oracle)](https://www.npmjs.com/package/@alt-javascript/jsdbc-oracle)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml/badge.svg)](https://github.com/alt-javascript/jsdbc/actions/workflows/node.js.yml)
+
 JSDBC driver for Oracle Database via [oracledb](https://github.com/oracle/node-oracledb) Thin mode. Pure JavaScript — no Oracle Client installation required.
 
 **Part of the [@alt-javascript/jsdbc](https://github.com/alt-javascript/jsdbc) monorepo.**
