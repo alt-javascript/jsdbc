@@ -37,5 +37,8 @@
     "mocha": "^10.2.0"
   },
   "author": "Craig Parravicini",
+  "contributors": [
+    "Claude (Anthropic)"
+  ],
   "license": "MIT"
 }

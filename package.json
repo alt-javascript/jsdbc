@@ -29,5 +29,8 @@
     "lint": "eslint packages/*/**.js --fix"
   },
   "author": "Craig Parravicini",
+  "contributors": [
+    "Claude (Anthropic)"
+  ],
   "license": "MIT"
 }
