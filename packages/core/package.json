@@ -10,7 +10,9 @@
     "driver",
     "datasource",
     "resultset",
-    "connection"
+    "connection",
+    "pool",
+    "connection-pool"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

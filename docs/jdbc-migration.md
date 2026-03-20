@@ -17,7 +17,7 @@ A guide for Java developers migrating to JSDBC. This maps JDBC concepts to their
 | `Class.forName("com.mysql.Driver")` | `import '@alt-javascript/jsdbc-mysql'` | ES module import triggers self-registration |
 | `setAutoCommit(false)` | `setAutoCommit(false)` | Identical transaction model |
 | `connection.close()` | `await connection.close()` | Async — all operations return Promises |
-| Connection pooling (HikariCP) | Planned via tarn.js | Not yet implemented |
+| Connection pooling (HikariCP) | `PooledDataSource` | Built-in pool, or plug in tarn.js / generic-pool |
 
 ### Driver Mapping
 
@@ -158,7 +158,17 @@ import '@alt-javascript/jsdbc-sqlite'; // that's it — driver is registered
 
 ### No Connection Pooling (Yet)
 
-JDBC applications use HikariCP, c3p0, or similar. JSDBC pooling via tarn.js is planned but not yet implemented. For now, `DataSource` creates a new connection per `getConnection()` call.
+JDBC applications use HikariCP, c3p0, or similar. JSDBC provides `PooledDataSource` with a built-in `SimpleConnectionPool` (zero dependencies). For production, plug in `tarn.js` or `generic-pool` via `TarnPoolAdapter` or `GenericPoolAdapter`:
+
+```javascript
+import { PooledDataSource } from '@alt-javascript/jsdbc-core';
+
+const ds = new PooledDataSource({
+  url: 'jsdbc:pg://localhost:5432/mydb',
+  username: 'user', password: 'pass',
+  pool: { min: 0, max: 10 },
+});
+```
 
 ### Browser Support
 

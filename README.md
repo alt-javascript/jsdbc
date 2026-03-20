@@ -91,6 +91,28 @@ await conn.createStatement()
 
 Use `SingleConnectionDataSource` for in-memory databases where each `connect()` call would otherwise create a new empty database.
 
+## Connection Pooling
+
+```javascript
+import { PooledDataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-pg';
+
+const ds = new PooledDataSource({
+  url: 'jsdbc:pg://localhost:5432/mydb',
+  username: 'user',
+  password: 'pass',
+  pool: { min: 0, max: 10 },
+});
+
+const conn = await ds.getConnection(); // from pool
+// ... use conn ...
+await conn.close(); // returns to pool
+
+await ds.destroy(); // at shutdown
+```
+
+Ships with a built-in `SimpleConnectionPool` (zero dependencies). For production, plug in [tarn.js](https://github.com/vincit/tarn.js) or [generic-pool](https://github.com/coopernurse/node-pool) via `TarnPoolAdapter` or `GenericPoolAdapter`. See [API Reference](docs/api-reference.md#connection-pooling).
+
 ## JSDBC URL Scheme
 
 ```
@@ -122,8 +144,8 @@ git clone https://github.com/alt-javascript/jsdbc.git
 cd jsdbc
 npm install
 
-npm test                # CI-safe: core + sqlite + sqljs (36 tests, no external deps)
-npm run test:integration  # all drivers (81 tests, needs Docker for pg/mysql/mssql/oracle)
+npm test                # CI-safe: core + sqlite + sqljs (49 tests, no external deps)
+npm run test:integration  # all drivers (94 tests, needs Docker for pg/mysql/mssql/oracle)
 ```
 
 ## License

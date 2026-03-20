@@ -178,3 +178,99 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:mysql://<host>:<port>/<db>` | `@alt-javascript/jsdbc-mysql` | MySQL/MariaDB via mysql2 |
 | `jsdbc:mssql://<host>:<port>/<db>` | `@alt-javascript/jsdbc-mssql` | SQL Server via tedious |
 | `jsdbc:oracle://<host>:<port>/<svc>` | `@alt-javascript/jsdbc-oracle` | Oracle via oracledb (Thin mode) |
+
+## Connection Pooling
+
+### PooledDataSource
+
+Drop-in replacement for `DataSource` that manages a connection pool. `close()` on a pooled connection returns it to the pool instead of closing it.
+
+```javascript
+import { PooledDataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-pg';
+
+const ds = new PooledDataSource({
+  url: 'jsdbc:pg://localhost:5432/mydb',
+  username: 'user',
+  password: 'pass',
+  pool: { min: 0, max: 10 },
+});
+
+const conn = await ds.getConnection(); // from pool
+// ... use conn ...
+await conn.close(); // returns to pool (not closed)
+
+// At shutdown:
+await ds.destroy(); // closes all connections
+```
+
+| Method | Returns | Description |
+|---|---|---|
+| `getConnection()` | `Promise<Connection>` | Acquire a pooled connection (close() returns it to pool) |
+| `destroy()` | `Promise<void>` | Close all connections and destroy the pool |
+| `getPool()` | `ConnectionPool` | Access the underlying pool for stats |
+
+### Pool Options
+
+Passed as `pool` in the PooledDataSource config. These apply to the built-in `SimpleConnectionPool`.
+
+| Option | Default | Description |
+|---|---|---|
+| `min` | `0` | Minimum idle connections to keep alive |
+| `max` | `10` | Maximum concurrent connections |
+| `acquireTimeoutMillis` | `30000` | Reject acquire after this timeout |
+| `idleTimeoutMillis` | `30000` | Destroy connections idle longer than this |
+| `reapIntervalMillis` | `1000` | How often to check for idle connections |
+
+### ConnectionPool Interface
+
+Abstract base class for pool implementations. Implement `acquire()`, `release()`, `destroy()`.
+
+| Method/Property | Returns | Description |
+|---|---|---|
+| `acquire()` | `Promise<Connection>` | Get a connection from the pool |
+| `release(connection)` | `Promise<void>` | Return a connection to the pool |
+| `destroy()` | `Promise<void>` | Destroy the pool and all connections |
+| `numUsed` | `number` | Connections currently in use |
+| `numFree` | `number` | Idle connections available |
+| `numPending` | `number` | Pending acquire requests |
+
+### Pluggable Pool Implementations
+
+#### Built-in SimpleConnectionPool (default)
+
+Zero dependencies. Used automatically by `PooledDataSource` when no `connectionPool` is provided.
+
+#### tarn.js Adapter
+
+```javascript
+import { Pool } from 'tarn';
+import { PooledDataSource, TarnPoolAdapter } from '@alt-javascript/jsdbc-core';
+
+const pool = TarnPoolAdapter.create(Pool, {
+  create: () => DriverManager.getConnection(url, props),
+  destroy: (conn) => conn.close(),
+  validate: (conn) => !conn.isClosed(),
+  min: 0,
+  max: 10,
+});
+
+const ds = new PooledDataSource({ url, connectionPool: pool });
+```
+
+#### generic-pool Adapter
+
+```javascript
+import genericPool from 'generic-pool';
+import { PooledDataSource, GenericPoolAdapter } from '@alt-javascript/jsdbc-core';
+
+const pool = GenericPoolAdapter.create(genericPool, {
+  create: () => DriverManager.getConnection(url, props),
+  destroy: (conn) => conn.close(),
+  validate: (conn) => !conn.isClosed(),
+  min: 0,
+  max: 10,
+});
+
+const ds = new PooledDataSource({ url, connectionPool: pool });
+```
