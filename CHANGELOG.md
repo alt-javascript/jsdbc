@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-26
+
+### Fixed
+
+- Bumped all package versions from `1.0.0` to `1.1.1` to resolve npm publish collision.
+  All packages (`jsdbc-core`, `jsdbc-sqlite`, `jsdbc-sqljs`, `jsdbc-sqljs-localstorage`,
+  `jsdbc-pg`, `jsdbc-mysql`, `jsdbc-mssql`, `jsdbc-oracle`) are now version-aligned
+  at `1.1.1`.
+
 ## [1.1.0] - 2026-03-26
 
 ### Added
@@ -45,5 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `@alt-javascript/jsdbc-mssql` — SQL Server via tedious
   - `@alt-javascript/jsdbc-oracle` — Oracle via oracledb (Thin mode)
 
+[1.1.1]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.1.1
 [1.1.0]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.1.0
 [1.0.0]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.0.0

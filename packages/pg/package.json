@@ -1,6 +1,6 @@
 {
   "name": "@alt-javascript/jsdbc-pg",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "JSDBC driver for PostgreSQL via pg",
   "keywords": [
     "jsdbc",
