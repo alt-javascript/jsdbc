@@ -30,6 +30,7 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 | [`@alt-javascript/jsdbc-mssql`](packages/mssql/) | SQL Server driver via [tedious](https://github.com/tediousjs/tedious) | Node.js |
 | [`@alt-javascript/jsdbc-oracle`](packages/oracle/) | Oracle driver via [oracledb](https://github.com/oracle/node-oracledb) (Thin mode) | Node.js |
 | [`@alt-javascript/jsdbc-sqljs`](packages/sqljs/) | SQLite driver via [sql.js](https://github.com/sql-js/sql.js) (WebAssembly) | Node.js + Browser |
+| [`@alt-javascript/jsdbc-sqljs-localstorage`](packages/sqljs-localstorage/) | SQLite via sql.js (Wasm) with automatic localStorage persistence | Browser |
 
 ## Supported Databases
 
@@ -37,6 +38,7 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 |---|---|---|---|---|
 | SQLite | `jsdbc-sqlite` | better-sqlite3 | `?` (native) | ✗ (native addon) |
 | SQLite (browser) | `jsdbc-sqljs` | sql.js (Wasm) | `?` (native) | ✓ |
+| SQLite (browser + persistent) | `jsdbc-sqljs-localstorage` | sql.js (Wasm) + localStorage | `?` (native) | ✓ |
 | PostgreSQL | `jsdbc-pg` | pg | `?` → `$1, $2` | ✓ |
 | MySQL / MariaDB | `jsdbc-mysql` | mysql2 | `?` (native) | ✓ |
 | SQL Server | `jsdbc-mssql` | tedious | `?` → `@p0, @p1` | ✓ |
@@ -86,6 +88,8 @@ await conn.close();
 
 ## Browser Usage
 
+## Browser Usage
+
 ```bash
 npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-sqljs
 ```
@@ -104,6 +108,33 @@ await stmt.close();
 ```
 
 Use `SingleConnectionDataSource` for in-memory databases where each `connect()` call would otherwise create a new empty database.
+
+For data that must **survive page reloads**, use `@alt-javascript/jsdbc-sqljs-localstorage`. It persists the database to `localStorage` automatically after every write — no explicit save step:
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-sqljs-localstorage
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-sqljs-localstorage';
+
+const ds = new DataSource({ url: 'jsdbc:sqljs:localstorage:myapp-db' });
+const conn = await ds.getConnection();
+
+const stmt = await conn.createStatement();
+await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, text TEXT)');
+await stmt.close();
+
+// Data is automatically written to localStorage — survives reload.
+const ps = await conn.prepareStatement('INSERT INTO notes (text) VALUES (?)');
+ps.setParameter(1, 'Hello, persistent world!');
+await ps.executeUpdate();
+await ps.close();
+await conn.close();
+```
+
+See the [Browser Persistence guide](docs/browser-persistence.md) for full details.
 
 ## Connection Pooling
 
@@ -138,6 +169,7 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:sqlite:./path/to/db.sqlite` | better-sqlite3 | File-based SQLite |
 | `jsdbc:sqlite::memory:` | better-sqlite3 | In-memory SQLite |
 | `jsdbc:sqljs:memory` | sql.js | In-memory SQLite (WebAssembly) |
+| `jsdbc:sqljs:localstorage:<key>` | sql.js + localStorage | Persistent browser SQLite |
 | `jsdbc:pg://host:port/database` | pg | PostgreSQL |
 | `jsdbc:mysql://host:port/database` | mysql2 | MySQL / MariaDB |
 | `jsdbc:mssql://host:port/database` | tedious | SQL Server / Azure SQL |
@@ -146,6 +178,7 @@ jsdbc:<subprotocol>:<connection-details>
 ## Documentation
 
 - [Getting Started](docs/getting-started.md) — tutorial: first database operations
+- [Browser Persistence](docs/browser-persistence.md) — how-to: persistent SQL in the browser with localStorage
 - [API Reference](docs/api-reference.md) — complete interface documentation
 - [Driver Guide](docs/driver-guide.md) — writing custom JSDBC drivers
 - [For JDBC Developers](docs/jdbc-migration.md) — migrating from Java JDBC
@@ -158,7 +191,7 @@ git clone https://github.com/alt-javascript/jsdbc.git
 cd jsdbc
 npm install
 
-npm test                # CI-safe: core + sqlite + sqljs (49 tests, no external deps)
+npm test                # CI-safe: core + sqlite + sqljs + sqljs-localstorage (83 tests, no external deps)
 npm run test:integration  # all drivers (94 tests, needs Docker for pg/mysql/mssql/oracle)
 ```
 

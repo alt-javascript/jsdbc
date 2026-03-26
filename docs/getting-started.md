@@ -296,7 +296,7 @@ const ds = new DataSource({
 });
 ```
 
-### Browser (sql.js / WebAssembly)
+### Browser — In-Memory (sql.js / WebAssembly)
 
 ```bash
 npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-sqljs
@@ -308,5 +308,45 @@ import '@alt-javascript/jsdbc-sqljs';
 
 const ds = new DataSource({ url: 'jsdbc:sqljs:memory' });
 ```
+
+### Browser — Persistent (sql.js + localStorage)
+
+For browser apps where data must survive page reloads, use the `jsdbc-sqljs-localstorage` driver. It automatically serialises the database to `localStorage` after every write — no explicit save step required.
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-sqljs-localstorage
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-sqljs-localstorage';
+
+// 'myapp-db' is the localStorage key where the database binary is stored.
+const ds = new DataSource({ url: 'jsdbc:sqljs:localstorage:myapp-db' });
+
+// First visit — create schema and insert data.
+const conn = await ds.getConnection();
+const stmt = await conn.createStatement();
+await stmt.executeUpdate('CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, text TEXT)');
+await stmt.close();
+
+const ps = await conn.prepareStatement('INSERT INTO notes (text) VALUES (?)');
+ps.setParameter(1, 'Remember to call the client');
+await ps.executeUpdate();
+await ps.close();
+await conn.close();
+
+// Later — page reload, new session, same URL.
+// The database is restored automatically from localStorage.
+const conn2 = await ds.getConnection();
+const stmt2 = await conn2.createStatement();
+const rs = await stmt2.executeQuery('SELECT * FROM notes');
+console.log(rs.getRows()); // [{ id: 1, text: 'Remember to call the client' }]
+rs.close();
+await stmt2.close();
+await conn2.close();
+```
+
+See the [Browser Persistence how-to guide](browser-persistence.md) for full details, transaction handling, storage limits, and testing patterns.
 
 All drivers use the same `DataSource`, `Connection`, `Statement`, `PreparedStatement`, and `ResultSet` API. Your application code doesn't change — only the import and URL.

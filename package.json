@@ -24,7 +24,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "npm test -w packages/core -w packages/sqlite -w packages/sqljs",
+    "test": "npm test -w packages/core -w packages/sqlite -w packages/sqljs -w packages/sqljs-localstorage",
     "test:integration": "npm test --workspaces --if-present",
     "lint": "eslint packages/*/**.js --fix"
   },

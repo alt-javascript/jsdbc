@@ -29,6 +29,7 @@ A guide for Java developers migrating to JSDBC. This maps JDBC concepts to their
 | `com.microsoft.sqlserver.jdbc.SQLServerDriver` | `@alt-javascript/jsdbc-mssql` | `jsdbc:mssql://` |
 | `oracle.jdbc.OracleDriver` | `@alt-javascript/jsdbc-oracle` | `jsdbc:oracle://` |
 | N/A (browser) | `@alt-javascript/jsdbc-sqljs` | `jsdbc:sqljs:` |
+| N/A (browser + persistent) | `@alt-javascript/jsdbc-sqljs-localstorage` | `jsdbc:sqljs:localstorage:` |
 
 ## Side-by-Side Examples
 

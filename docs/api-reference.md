@@ -178,6 +178,7 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:sqlite:<path>` | `@alt-javascript/jsdbc-sqlite` | File-based SQLite via better-sqlite3 |
 | `jsdbc:sqlite::memory:` | `@alt-javascript/jsdbc-sqlite` | In-memory SQLite via better-sqlite3 |
 | `jsdbc:sqljs:memory` | `@alt-javascript/jsdbc-sqljs` | In-memory SQLite via sql.js (WebAssembly) |
+| `jsdbc:sqljs:localstorage:<key>` | `@alt-javascript/jsdbc-sqljs-localstorage` | Persistent browser SQLite via sql.js + localStorage |
 | `jsdbc:pg://<host>:<port>/<db>` | `@alt-javascript/jsdbc-pg` | PostgreSQL via pg |
 | `jsdbc:mysql://<host>:<port>/<db>` | `@alt-javascript/jsdbc-mysql` | MySQL/MariaDB via mysql2 |
 | `jsdbc:mssql://<host>:<port>/<db>` | `@alt-javascript/jsdbc-mssql` | SQL Server via tedious |
@@ -278,3 +279,62 @@ const pool = GenericPoolAdapter.create(genericPool, {
 
 const ds = new PooledDataSource({ url, connectionPool: pool });
 ```
+
+## LocalStorageStore (`@alt-javascript/jsdbc-sqljs-localstorage`)
+
+Injectable abstraction over the `localStorage` API. Wraps any backend implementing `{ getItem, setItem, removeItem }`. Used by `LocalStorageSqlJsDriver` to persist and restore the sql.js database binary.
+
+```javascript
+import { LocalStorageStore } from '@alt-javascript/jsdbc-sqljs-localstorage';
+```
+
+### Constructor
+
+```javascript
+new LocalStorageStore(backend?)
+```
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `backend` | `{ getItem, setItem, removeItem }` | `globalThis.localStorage` | Storage backend. Defaults to browser localStorage. |
+
+### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `getItem(key)` | `string\|null` | Retrieve stored value by key |
+| `setItem(key, value)` | `void` | Store value. May throw `QuotaExceededError` if storage is full. |
+| `removeItem(key)` | `void` | Delete stored key |
+
+### Injecting a Test Backend
+
+Pass a `Map`-backed shim to test localStorage-backed code in Node.js without a browser:
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import { LocalStorageStore } from '@alt-javascript/jsdbc-sqljs-localstorage';
+import '@alt-javascript/jsdbc-sqljs-localstorage';
+
+class MapShim {
+  constructor() { this._map = new Map(); }
+  getItem(k)    { return this._map.has(k) ? this._map.get(k) : null; }
+  setItem(k, v) { this._map.set(k, v); }
+  removeItem(k) { this._map.delete(k); }
+}
+
+const ds = new DataSource({
+  url: 'jsdbc:sqljs:localstorage:test-db',
+  properties: { store: new LocalStorageStore(new MapShim()) },
+});
+```
+
+### QuotaExceededError
+
+When `setItem` throws a `QuotaExceededError`, the driver rethrows it as a descriptive `Error`:
+
+```
+Error: localStorage quota exceeded for key "myapp-db" (~4800.0 KB).
+       Consider running VACUUM to compact the database.
+```
+
+The in-memory sql.js database remains usable after a quota error — only the persistence write failed.

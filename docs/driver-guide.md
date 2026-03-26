@@ -240,3 +240,14 @@ Some native drivers have their own transaction API rather than accepting `BEGIN`
 | Oracle (oracledb) | Implicit transaction start; `conn.commit()` / `conn.rollback()` methods |
 
 Check your native driver's documentation — using its native transaction API avoids subtle state tracking bugs.
+
+## Extending an Existing Driver
+
+If your driver adds behaviour on top of an existing one (rather than wrapping a new native library), extend the existing driver's classes rather than reimplementing them. Override only the methods you need.
+
+`@alt-javascript/jsdbc-sqljs-localstorage` is the canonical example. It extends `SqlJsConnection`, `SqlJsStatement`, and `SqlJsPreparedStatement` to add localStorage write-through:
+
+- `LocalStorageSqlJsStatement` overrides `_executeUpdate` and `_execute` to call `connection._flush()` after each write — but only when `_inTransaction` is `false`. Writes inside a transaction are flushed by `_commit()` instead, because calling `db.export()` (which `_flush()` uses internally) ends an active sql.js transaction.
+- `LocalStorageSqlJsConnection` overrides `_setAutoCommit`, `_commit`, and `_rollback` to maintain a localStorage snapshot. On `_rollback()`, the pre-transaction snapshot is restored so the on-disk state rolls back alongside the in-memory state.
+
+When building a driver that decorates another, keep the extension minimal: override only `_`-prefixed internal methods, never the public API methods. This preserves the closed-open structure of the base class and ensures your extension passes the compliance test suite unchanged.
