@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-31
+
+### Added
+
+- `@alt-javascript/jsdbc-teradata` — new driver package for Teradata Database via
+  [`teradatasql`](https://www.npmjs.com/package/teradatasql). URL scheme:
+  `jsdbc:teradata://host[:port][/database]`.
+  - Connects via `teradatasql.connectAsync` — fully async, no event-loop blocking.
+  - `cursorUtils` helper maps teradatasql's positional row arrays to lowercase-keyed
+    plain objects, consistent with all other JSDBC drivers.
+  - Teradata natively supports `?` parameter markers — no placeholder conversion required.
+  - `autocommit`, `commit()`, and `rollback()` delegate directly to the native connection.
+  - Requires 64-bit Node.js 18.20.7+; supports Windows x64, macOS (Intel/ARM),
+    Linux x64/ARM64.
+  - Requires Teradata Database 16.20 or later.
+
+### Changed
+
+- `@alt-javascript/jsdbc-core` test compliance suite (`driverCompliance.js`) — added
+  `teradata` drop syntax case (`DROP TABLE`) and `ignoreDropError` option (default `false`)
+  to support databases that lack `DROP TABLE IF EXISTS`. Fully backward-compatible.
+- Documentation updated across root README, `docs/getting-started.md`, and
+  `docs/driver-guide.md` to include Teradata in all package tables, URL scheme listings,
+  dialect option reference, and placeholder conversion reference.
+
 ## [1.1.1] - 2026-03-26
 
 ### Fixed
@@ -54,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `@alt-javascript/jsdbc-mssql` — SQL Server via tedious
   - `@alt-javascript/jsdbc-oracle` — Oracle via oracledb (Thin mode)
 
+[1.2.0]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.2.0
 [1.1.1]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.1.1
 [1.1.0]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.1.0
 [1.0.0]: https://github.com/alt-javascript/jsdbc/releases/tag/v1.0.0

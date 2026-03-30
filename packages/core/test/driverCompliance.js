@@ -14,6 +14,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
     textType = 'TEXT',
     ifNotExists = true,
     dropSyntax = 'mssql',
+    ignoreDropError = false,
   } = options;
 
   // Helper: generate DDL compatible with the target database
@@ -32,6 +33,11 @@ export default function driverComplianceTests(driverName, getDataSource, options
     }
     if (dropSyntax === 'oracle') {
       return `BEGIN EXECUTE IMMEDIATE 'DROP TABLE ${name}'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;`;
+    }
+    if (dropSyntax === 'teradata') {
+      // Teradata has no DROP TABLE IF EXISTS — return a plain DROP TABLE; the
+      // caller sets ignoreDropError:true so "table not found" errors are swallowed.
+      return `DROP TABLE ${name}`;
     }
     return `IF OBJECT_ID('${name}', 'U') IS NOT NULL DROP TABLE ${name}`;
   }
@@ -59,7 +65,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
         const drop = dropTable('test_users');
-        if (drop) await stmt.executeUpdate(drop);
+        if (drop) { try { await stmt.executeUpdate(drop); } catch (e) { if (!ignoreDropError) throw e; } }
         await stmt.executeUpdate(createTable('test_users', `id INTEGER PRIMARY KEY, name ${textType}, age INTEGER`));
         await stmt.executeUpdate('DELETE FROM test_users');
         await stmt.close();
@@ -108,7 +114,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
         const drop = dropTable('test_items');
-        if (drop) await stmt.executeUpdate(drop);
+        if (drop) { try { await stmt.executeUpdate(drop); } catch (e) { if (!ignoreDropError) throw e; } }
         await stmt.executeUpdate(createTable('test_items', `id INTEGER PRIMARY KEY, label ${textType}, price ${realType}`));
         await stmt.executeUpdate('DELETE FROM test_items');
         await stmt.close();
@@ -175,7 +181,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
         const drop = dropTable('test_rs');
-        if (drop) await stmt.executeUpdate(drop);
+        if (drop) { try { await stmt.executeUpdate(drop); } catch (e) { if (!ignoreDropError) throw e; } }
         await stmt.executeUpdate(createTable('test_rs', `id INTEGER, val ${textType}`));
         await stmt.executeUpdate('DELETE FROM test_rs');
         await stmt.executeUpdate("INSERT INTO test_rs VALUES (1, 'a')");
@@ -248,7 +254,7 @@ export default function driverComplianceTests(driverName, getDataSource, options
         conn = await ds.getConnection();
         const stmt = await conn.createStatement();
         const drop = dropTable('test_tx');
-        if (drop) await stmt.executeUpdate(drop);
+        if (drop) { try { await stmt.executeUpdate(drop); } catch (e) { if (!ignoreDropError) throw e; } }
         await stmt.executeUpdate(createTable('test_tx', `id INTEGER PRIMARY KEY, val ${textType}`));
         await stmt.executeUpdate('DELETE FROM test_tx');
         await stmt.close();

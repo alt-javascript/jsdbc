@@ -1,25 +1,23 @@
 {
-  "name": "@alt-javascript/jsdbc-mysql",
+  "name": "@alt-javascript/jsdbc-teradata",
   "version": "1.2.0",
-  "description": "JSDBC driver for MySQL/MariaDB via mysql2",
+  "description": "JSDBC driver for Teradata via teradatasql",
   "keywords": [
     "jsdbc",
     "jdbc",
     "database",
-    "mysql",
-    "mariadb",
-    "mysql2",
+    "teradata",
     "driver"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "homepage": "https://github.com/alt-javascript/jsdbc/tree/main/packages/mysql#readme",
+  "homepage": "https://github.com/alt-javascript/jsdbc/tree/main/packages/teradata#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/alt-javascript/jsdbc",
-    "directory": "packages/mysql"
+    "directory": "packages/teradata"
   },
   "type": "module",
   "main": "index.js",
@@ -28,7 +26,7 @@
   },
   "dependencies": {
     "@alt-javascript/jsdbc-core": "*",
-    "mysql2": "^3.20.0"
+    "teradatasql": "^20.0.0"
   },
   "devDependencies": {
     "chai": "^4.3.7",

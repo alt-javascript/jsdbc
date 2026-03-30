@@ -296,6 +296,23 @@ const ds = new DataSource({
 });
 ```
 
+### Teradata
+
+```bash
+npm install @alt-javascript/jsdbc-core @alt-javascript/jsdbc-teradata
+```
+
+```javascript
+import { DataSource } from '@alt-javascript/jsdbc-core';
+import '@alt-javascript/jsdbc-teradata';
+
+const ds = new DataSource({
+  url: 'jsdbc:teradata://my-teradata-host/mydb',
+  username: 'appuser',
+  password: 'secret',
+});
+```
+
 ### Browser — In-Memory (sql.js / WebAssembly)
 
 ```bash

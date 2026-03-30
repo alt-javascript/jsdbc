@@ -31,6 +31,7 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 | [`@alt-javascript/jsdbc-oracle`](packages/oracle/) | Oracle driver via [oracledb](https://github.com/oracle/node-oracledb) (Thin mode) | Node.js |
 | [`@alt-javascript/jsdbc-sqljs`](packages/sqljs/) | SQLite driver via [sql.js](https://github.com/sql-js/sql.js) (WebAssembly) | Node.js + Browser |
 | [`@alt-javascript/jsdbc-sqljs-localstorage`](packages/sqljs-localstorage/) | SQLite via sql.js (Wasm) with automatic localStorage persistence | Browser |
+| [`@alt-javascript/jsdbc-teradata`](packages/teradata/) | Teradata driver via [teradatasql](https://www.npmjs.com/package/teradatasql) | Node.js |
 
 ## Supported Databases
 
@@ -43,6 +44,7 @@ JavaScript has no standard database access API. Every library — `pg`, `mysql2`
 | MySQL / MariaDB | `jsdbc-mysql` | mysql2 | `?` (native) | ✓ |
 | SQL Server | `jsdbc-mssql` | tedious | `?` → `@p0, @p1` | ✓ |
 | Oracle | `jsdbc-oracle` | oracledb (Thin) | `?` → `:0, :1` | ✓ |
+| Teradata | `jsdbc-teradata` | teradatasql | `?` (native) | ✗ (platform binary) |
 
 All drivers wrap battle-tested native libraries — JSDBC adds a uniform async API on top, not a new wire protocol implementation.
 
@@ -174,6 +176,7 @@ jsdbc:<subprotocol>:<connection-details>
 | `jsdbc:mysql://host:port/database` | mysql2 | MySQL / MariaDB |
 | `jsdbc:mssql://host:port/database` | tedious | SQL Server / Azure SQL |
 | `jsdbc:oracle://host:port/service` | oracledb | Oracle Database (Thin mode) |
+| `jsdbc:teradata://host[:port][/database]` | teradatasql | Teradata Database |
 
 ## Documentation
 

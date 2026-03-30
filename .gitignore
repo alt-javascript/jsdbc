@@ -4,3 +4,34 @@ dist/
 *.sqlite
 *.db
 .idea/
+
+# GSD runtime state (auto-managed, not for version control)
+.gsd/gsd.db
+.gsd/gsd.db-shm
+.gsd/gsd.db-wal
+.gsd/event-log.jsonl
+.gsd/state-manifest.json
+.bg-shell/
+
+# ── GSD baseline (auto-generated) ──
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+*.code-workspace
+.env
+.env.*
+!.env.example
+.next/
+build/
+__pycache__/
+*.pyc
+.venv/
+venv/
+target/
+vendor/
+*.log
+coverage/
+.cache/
+tmp/

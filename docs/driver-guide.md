@@ -196,16 +196,18 @@ driverComplianceTests('My Driver', getDataSource, {
   textType: 'NVARCHAR(255)',            // default: 'TEXT'
   ifNotExists: false,                   // default: true (CREATE TABLE IF NOT EXISTS)
   dropSyntax: 'oracle',                // default: 'mssql' — used when ifNotExists is false
+  ignoreDropError: true,               // default: false — swallow DROP TABLE errors on first run
 });
 ```
 
 | Option | Default | When to change |
 |---|---|---|
-| `limitOne` | `'LIMIT 1'` | Oracle: `'FETCH FIRST 1 ROWS ONLY'`, MSSQL: `'OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY'` |
-| `realType` | `'REAL'` | Oracle: `'NUMBER(10,2)'` |
-| `textType` | `'TEXT'` | MSSQL: `'NVARCHAR(255)'`, Oracle: `'VARCHAR2(255)'` |
-| `ifNotExists` | `true` | Set to `false` for MSSQL and Oracle (no `CREATE TABLE IF NOT EXISTS`) |
-| `dropSyntax` | `'mssql'` | Set to `'oracle'` for Oracle PL/SQL drop syntax |
+| `limitOne` | `'LIMIT 1'` | Oracle: `'FETCH FIRST 1 ROWS ONLY'`; Teradata: `'SAMPLE 1'` |
+| `realType` | `'REAL'` | Oracle: `'NUMBER(10,2)'`; Teradata: `'FLOAT'` |
+| `textType` | `'TEXT'` | MSSQL: `'NVARCHAR(255)'`; Oracle: `'VARCHAR2(255)'`; Teradata: `'VARCHAR(255)'` |
+| `ifNotExists` | `true` | Set to `false` for MSSQL, Oracle, and Teradata (no `CREATE TABLE IF NOT EXISTS`) |
+| `dropSyntax` | `'mssql'` | Set to `'oracle'` for Oracle PL/SQL drop syntax; `'teradata'` for plain `DROP TABLE` |
+| `ignoreDropError` | `false` | Set to `true` for databases with no conditional drop (Teradata) — swallows `DROP TABLE` errors in `beforeEach` |
 
 ## Package Conventions
 
@@ -223,6 +225,7 @@ JSDBC uses `?` as the universal placeholder. Each driver converts to its native 
 | SQLite (better-sqlite3) | `?` | None needed |
 | sql.js | `?` | None needed |
 | MySQL / MariaDB (mysql2) | `?` | None needed |
+| Teradata (teradatasql) | `?` | None needed |
 | PostgreSQL (pg) | `$1`, `$2`, ... | `sql.replace(/\?/g, () => '$' + (++idx))` |
 | SQL Server (tedious) | `@p0`, `@p1`, ... | `sql.replace(/\?/g, () => '@p' + (idx++))` |
 | Oracle (oracledb) | `:0`, `:1`, ... | `sql.replace(/\?/g, () => ':' + (idx++))` |
